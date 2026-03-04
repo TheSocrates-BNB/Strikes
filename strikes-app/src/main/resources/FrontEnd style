@@ -1,0 +1,47 @@
+/* --- 1. BASE RULES --- */
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+body { background: #121212; color: #eee; height: 100vh; padding: 10px; overflow: hidden; }
+
+/* --- 2. LIQUID LAYOUT --- */
+.dashboard { display: flex; flex-direction: column; height: 100%; gap: 10px; }
+.row { display: flex; gap: 10px; width: 100%; }
+.top-row { flex: 0 0 auto; } /* Shrinks to fit contents exactly */
+.bottom-row { flex: 1 1 auto; min-height: 0; } /* Expands to fill remaining screen */
+
+.panel {
+    flex: 1; background: #1e1e1e; border: 1px solid #333; border-radius: 6px;
+    padding: 12px; display: flex; flex-direction: column; min-height: 0;
+}
+
+h3 { font-size: 13px; color: #ff9800; border-bottom: 1px solid #333; padding-bottom: 6px; margin-bottom: 10px; text-transform: uppercase; }
+
+/* --- 3. INPUTS & SPACING --- */
+input, select {
+    background: #252525; border: 1px solid #444; color: #fff;
+    padding: 6px; font-size: 12px; border-radius: 3px; width: 100%; margin-bottom: 8px;
+}
+label { font-size: 10px; color: #888; text-transform: uppercase; display: block; margin-bottom: 3px; margin-top: 4px; }
+
+.input-group { display: flex; gap: 6px; }
+.config-row { display: flex; gap: 10px; margin-bottom: 8px; }
+.col-small { flex: 0 0 80px; }
+.col-large { flex: 1; }
+.push-bottom { margin-top: auto; } /* Pushes elements to the bottom of the panel */
+
+/* --- 4. BUTTONS --- */
+.btn { font-weight: bold; border: none; padding: 8px; border-radius: 3px; cursor: pointer; width: 100%; color: white; transition: 0.2s; }
+.btn-save { background: #2e7d32; }
+.btn-heal { background: #1565c0; flex: 1; }
+.btn-delete { background: #c62828; flex: 1; }
+.btn-strike { background: #b30000; padding: 12px; font-size: 14px; margin-top: 10px; }
+.btn-strike:hover { filter: brightness(1.2); }
+.btn-dice { background: #444; border: 1px solid #666; color: white; width: 35px; cursor: pointer; border-radius: 3px; }
+
+/* --- 5. UI COMPONENTS --- */
+.hp-bar-bg { background: #333; height: 8px; border-radius: 4px; overflow: hidden; margin-bottom: 10px; }
+.hp-bar-fill { background: #4caf50; height: 100%; width: 0%; transition: width 0.3s ease, background 0.3s; }
+
+.outcome-card { background: #0b0b0b; padding: 10px; border-left: 4px solid #444; min-height: 70px; border-radius: 3px; }
+.history-log { flex: 1; overflow-y: auto; margin-top: 10px; border-top: 1px solid #333; padding-top: 10px; font-size: 11px; color: #bbb; }
+.log-entry { padding: 4px 0; border-bottom: 1px solid #222; }
+.muted { color: #666; font-style: italic; }

@@ -1,0 +1,14 @@
+C:\Users\TheodosiadisSokratis\eclipse-workspace_14-01-26\strikes-app\src\main\java\com\strikes\app\model\enums\DamageType.java
+C:\Users\TheodosiadisSokratis\eclipse-workspace_14-01-26\strikes-app\src\main\java\com\strikes\app\model\enums\HitLocation.java
+C:\Users\TheodosiadisSokratis\eclipse-workspace_14-01-26\strikes-app\src\main\java\com\strikes\app\service\WoundFactory.java
+C:\Users\TheodosiadisSokratis\eclipse-workspace_14-01-26\strikes-app\src\main\java\com\strikes\app\controller\CombatController.java
+C:\Users\TheodosiadisSokratis\eclipse-workspace_14-01-26\strikes-app\src\main\java\com\strikes\app\StrikesApplication.java
+C:\Users\TheodosiadisSokratis\eclipse-workspace_14-01-26\strikes-app\src\main\java\com\strikes\app\dto\StrikeRequest.java
+C:\Users\TheodosiadisSokratis\eclipse-workspace_14-01-26\strikes-app\src\main\java\com\strikes\app\config\DataInitializer.java
+C:\Users\TheodosiadisSokratis\eclipse-workspace_14-01-26\strikes-app\src\main\java\com\strikes\app\dto\StrikeResult.java
+C:\Users\TheodosiadisSokratis\eclipse-workspace_14-01-26\strikes-app\src\main\java\com\strikes\app\repository\CombatLogRepository.java
+C:\Users\TheodosiadisSokratis\eclipse-workspace_14-01-26\strikes-app\src\main\java\com\strikes\app\model\Adventurer.java
+C:\Users\TheodosiadisSokratis\eclipse-workspace_14-01-26\strikes-app\src\main\java\com\strikes\app\service\CombatService.java
+C:\Users\TheodosiadisSokratis\eclipse-workspace_14-01-26\strikes-app\src\main\java\com\strikes\app\controller\AdventurerController.java
+C:\Users\TheodosiadisSokratis\eclipse-workspace_14-01-26\strikes-app\src\main\java\com\strikes\app\repository\AdventurerRepository.java
+C:\Users\TheodosiadisSokratis\eclipse-workspace_14-01-26\strikes-app\src\main\java\com\strikes\app\model\CombatLog.java

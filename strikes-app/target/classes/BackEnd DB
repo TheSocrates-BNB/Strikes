@@ -1,0 +1,27 @@
+CREATE DATABASE strikes_db;
+USE strikes_db;
+
+-- Table for PCs and Monsters (The "Current State")
+CREATE TABLE adventurers (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    max_hp INT NOT NULL,
+    current_hp INT NOT NULL,
+    dr INT DEFAULT 0,              -- Damage Reduction
+    strike_class INT DEFAULT 2,     -- 2 for Med, 3 for Large
+    size_modifier INT DEFAULT 0,    -- Impact on hit rolls
+    is_humanoid BOOLEAN DEFAULT TRUE, -- Determines hit table [cite: 1]
+    status VARCHAR(500) DEFAULT 'Healthy', -- The latest wound description
+    wounds INT DEFAULT 0            -- Total accumulated wounds
+);
+
+-- Table for the Combat History (The "Audit Trail")
+CREATE TABLE combat_log (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    adventurer_id BIGINT,
+    action_type VARCHAR(50),        -- STRIKE, HEAL, etc.
+    description TEXT,               -- e.g., "Shattered Knee: -2 move"
+    severity INT,                   -- 1 to 6 scale
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (adventurer_id) REFERENCES adventurers(id)
+);

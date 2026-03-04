@@ -1,0 +1,162 @@
+const BASE_URL = 'http://localhost:8080/api';
+
+window.onload = loadHeroes;
+
+// --- 1. HERO MANAGEMENT ---
+async function loadHeroes() {
+    try {
+        const res = await fetch(`${BASE_URL}/adventurers`);
+        const heroes = await res.json();
+        const sel = document.getElementById('heroSelector');
+        
+        if (heroes.length === 0) {
+            sel.innerHTML = '<option value="">(No Heroes Found)</option>';
+            document.getElementById('hpFill').style.width = '0%';
+            return;
+        }
+
+        sel.innerHTML = heroes.map(h => `<option value="${h.id}">${h.name} [HP: ${h.currentHp}/${h.maxHp}]</option>`).join('');
+        updateHpBar();
+    } catch (e) { console.error("Error loading heroes", e); }
+}
+
+async function saveHero() {
+    const payload = {
+        name: document.getElementById('newName').value,
+        maxHp: parseInt(document.getElementById('newMaxHp').value),
+        dr: parseInt(document.getElementById('newDr').value) || 0,
+        strikeClass: parseInt(document.getElementById('newSc').value) || 2,
+        isHumanoid: true
+    };
+
+    if (!payload.name || !payload.maxHp) return alert("Name and HP required!");
+
+    await fetch(`${BASE_URL}/adventurers`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+    });
+    document.getElementById('newName').value = '';
+    document.getElementById('newMaxHp').value = '';
+    loadHeroes();
+}
+
+async function resetHero() {
+    const id = document.getElementById('heroSelector').value;
+    if (id) {
+        await fetch(`${BASE_URL}/adventurers/${id}/reset`, { method: 'PUT' });
+        loadHeroes();
+    }
+}
+
+async function deleteHero() {
+    const id = document.getElementById('heroSelector').value;
+    if (id && confirm("Eradicate this hero?")) {
+        await fetch(`${BASE_URL}/adventurers/${id}`, { method: 'DELETE' });
+        loadHeroes();
+    }
+}
+
+function updateHpBar() {
+    const sel = document.getElementById('heroSelector');
+    if (!sel || !sel.value) return;
+    
+    const text = sel.options[sel.selectedIndex].text;
+    const match = text.match(/\[HP: (-?\d+)\/(\d+)\]/);
+    if (match) {
+        const current = parseInt(match[1]);
+        const max = parseInt(match[2]);
+        let percent = Math.max(0, Math.min(100, (current / max) * 100)); // Clamp between 0-100
+        
+        const bar = document.getElementById('hpFill');
+        bar.style.width = `${percent}%`;
+        bar.style.background = percent < 25 ? '#d32f2f' : (percent < 50 ? '#fbc02d' : '#388e3c');
+    }
+}
+
+// --- 2. COMBAT ENGINE ---
+function syncAction(el) {
+    // Clear other selects
+    document.querySelectorAll('.action-sync').forEach(s => { if (s !== el) s.value = ""; });
+    
+    // UI Color Feedback
+    const btn = document.getElementById('mainExecBtn');
+    if (el.id === 'healType' && el.value !== "") {
+        btn.style.background = "#2e7d32";
+        btn.innerText = "CAST RESTORATION!";
+    } else {
+        btn.style.background = "#b30000";
+        btn.innerText = "EXECUTE ACTION!";
+    }
+}
+
+function rollRandomLoc() {
+    const roll = Math.floor(Math.random() * 100) + 1;
+    let loc = "TORSO";
+    
+    if (roll <= 15) loc = "RIGHT_LEG";
+    else if (roll <= 30) loc = "LEFT_LEG";
+    else if (roll <= 40) loc = "ABDOMEN";
+    else if (roll <= 60) loc = "TORSO";
+    else if (roll <= 70) loc = "RIGHT_ARM";
+    else if (roll <= 80) loc = "LEFT_ARM";
+    else if (roll <= 90) loc = "HEAD";
+    else if (roll <= 95) loc = "TAIL";
+    else loc = "WING";
+
+    document.getElementById('manualLocation').value = loc;
+}
+
+async function submitStrike() {
+    const targetId = document.getElementById('heroSelector').value;
+    const loc = document.getElementById('manualLocation').value;
+    const amount = document.getElementById('rawAmount').value;
+    
+    const type = document.getElementById('physType').value || 
+                 document.getElementById('elemType').value || 
+                 document.getElementById('healType').value;
+
+    if (!targetId || !type || !amount) return alert("Target, Amount, and Action Type are required!");
+
+    const payload = {
+        targetId: parseInt(targetId),
+        type: type,
+        rawDamage: parseInt(amount),
+        locationRoll: 50, // Dummy integer fallback if backend still demands it
+        manualLocation: loc
+    };
+
+    try {
+        const res = await fetch(`${BASE_URL}/combat/strike`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+        });
+        const result = await res.json();
+        renderOutcome(result);
+        loadHeroes();
+    } catch (e) { console.error("Strike Failed", e); }
+}
+
+// --- 3. OUTCOME RENDERING ---
+function renderOutcome(data) {
+    const card = document.getElementById('outcomeDisplay');
+    const log = document.getElementById('combatHistory');
+    
+    const isHeal = data.hpDamage < 0;
+    const color = isHeal ? "#00e676" : (data.instantDeath ? "#ff1744" : "#ffab00");
+    const icon = isHeal ? "✨" : "🩸";
+    const sign = isHeal ? "+" : "-";
+    const absDamage = Math.abs(data.hpDamage);
+
+    // Update Card
+    card.style.borderColor = color;
+    card.innerHTML = `
+        <h4 style="color:${color}; margin-bottom: 4px; font-size: 14px;">${icon} ${data.woundName}</h4>
+        <p style="font-size: 11px; margin-bottom: 6px; color: #ddd;"><strong>${data.location}</strong>: ${data.description}</p>
+        <h2 style="text-align:right; color:${color}; margin: 0;">${sign}${absDamage} HP</h2>
+    `;
+
+    // Append to Log (Prepending puts newest at top)
+    const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
+    const entry = document.createElement('div');
+    entry.className = "log-entry";
+    entry.innerHTML = `<span style="color:#555">[${time}]</span> <span style="color:${color}">${data.woundName}</span> ${sign}${absDamage}`;
+    log.prepend(entry);
+}

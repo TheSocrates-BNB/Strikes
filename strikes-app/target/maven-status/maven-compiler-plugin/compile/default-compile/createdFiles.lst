@@ -1,0 +1,15 @@
+com\strikes\app\model\Adventurer.class
+com\strikes\app\dto\StrikeResult.class
+com\strikes\app\service\WoundFactory.class
+com\strikes\app\controller\CombatController.class
+com\strikes\app\service\CombatService.class
+com\strikes\app\dto\StrikeRequest.class
+com\strikes\app\config\DataInitializer.class
+com\strikes\app\model\enums\DamageType.class
+com\strikes\app\controller\AdventurerController.class
+com\strikes\app\model\CombatLog.class
+com\strikes\app\repository\CombatLogRepository.class
+com\strikes\app\StrikesApplication.class
+com\strikes\app\model\enums\HitLocation.class
+com\strikes\app\service\WoundFactory$1.class
+com\strikes\app\repository\AdventurerRepository.class
